@@ -1,78 +1,343 @@
-Título
+Algoritmo de Programação Dinâmica: Mochila Binária
 ======
 
-Subtítulo
+Situação-exemplo
 ---------
 
-Para criar um parágrafo, basta escrever um texto contínuo, sem pular linhas.
+Anderson é um jovem sonhador que queria viajar o mundo inteiro sem gastar nenhum tostão. Para realizar seu objetivo, ele entrou de gaiato no navio S.S. Paulina no porto de Santos. Porém, logo que o navio deixou o porto, o capitão notou o intruso e integrou-o à tripulação, ordenando: "Deixa de moleza e vai lavando esse convés".
 
-Você também pode criar
+Um belo dia, entretanto, enquanto Anderson descascava batata no porão, o navio foi invadido por piratas saqueadores, sob o comando de Durão Barba Ruiva. Porém, Durão tinha apenas uma velha mochila para carregar itens do barco, e Anderson teve uma ideia para, enfim, viajar de graça: "Sua velha mochila pouco suporta. Por sorte, sei, de cor, peso e valor de cada item nesse barco. Encho a mochila com o que há de melhor se me levar a Xique-Xique, Bahia!"
 
-1. listas;
+Durão, então, respondeu: "Topo! Mas me perca um tostão e eu quebro sua perna."
 
-2. ordenadas,
+Anderson abriu um sorriso e saiu correndo pelo convés com a velha mochila. Porém, de repente, ele percebeu que não era tão fácil assim saber quais itens colocar na mochila e quais itens deixar para trás.
 
-assim como
+Suando frio e com medo de ter sua perna quebrada, nosso marinheiro resolveu pedir sua ajuda. Você, ávido por Desafios de Programação, aceitou. Porém, a questão permanece: ***Como encontrar a configuração de itens, com diferentes pesos e valores, que maximize o valor total sem ultrapassar a capacidade da mochila?***
 
-* listas;
 
-* não-ordenadas
+Primeiras impressões
+---------
 
-e imagens. Lembre que todas as imagens devem estar em uma subpasta *img*.
+Você, como um bom engenheiro e problem-solver, sabe que, para resolver um problema, é preciso antes ter todas as informações que o definem. Assim, você solicitou a Anderson que ele lhe oferecesse uma lista de todos os pesos e valores dos itens do barco, assim como a capacidade da mochila.
 
-![](logo.png)
+Ele então lhe entregou um pedaço de papel de pão com os seguintes dados escritos:
 
-Para tabelas, usa-se a [notação do
-MultiMarkdown](https://fletcher.github.io/MultiMarkdown-6/syntax/tables.html),
-que é muito flexível. Vale a pena abrir esse link para saber todas as
-possibilidades.
+* **Capacidade da velha mochila**: 15 kg.
+* **Itens**:
+    * **Binóculos**, pesa 1 kg e vale R$ 10,00;
+    * **Âncora de bote**, pesa 40 kg e vale R$ 250,00;
+    * **Saco de batatas**, pesa 9 kg e vale R$ 170,00;
+    * **Prataria**, pesa 3 kg e vale R$ 100,00;
+    * **Sonar**, pesa 5 kg e vale R$ 130,00;
+    * **Bote inflável**, pesa 8 kg e vale R$ 180,00;
+    * **Rádio**, pesa 4 kg e vale R$ 90,00;
+    * **Rede de pesca**, pesa 6 kg e vale R$ 120,00;
+    * **Colete salva-vidas**, pesa 2 kg e vale R$ 60,00;
+    * **Fogareiro portátil**, pesa 7 kg e vale R$ 150,00.
 
-| coluna a | coluna b |
-|----------|----------|
-| 1        | 2        |
+Olhando para a lista de itens, seu primeiro instinto então foi: “Por que não só pegar os itens mais valiosos e colocá-los na mochila?”
 
-Ao longo de um texto, você pode usar *itálico*, **negrito**, {red}(vermelho) e
-[[tecla]]. Também pode usar uma equação LaTeX: $f(n) \leq g(n)$. Se for muito
-grande, você pode isolá-la em um parágrafo.
+??? Atividade
+Olhe para os itens, o que acontece se você começar pelo item de maior valor?
 
-$$\lim_{n \rightarrow \infty} \frac{f(n)}{g(n)} \leq 1$$
+**DICA:** Pense numa mochila de verdade, o que aconteceria levando em conta o peso.
 
-Para inserir uma animação, use `md :` seguido do nome de uma pasta onde as
-imagens estão. Essa pasta também deve estar em *img*.
+::: Gabarito
+O item de maior valor é a Âncora de bote, que pesa 40 kg e vale R$ 250,00. Este item, no entanto, excede a capacidade da velha mochila. Se colocá-la na mochila, a mochila rasgará, deixando Durão Barba Ruiva muito muito furioso…
+:::
+???
 
-:bubble
+Certo, certo. Colocar o item de maior valor não é uma boa ideia porque é muito pesado, mas foi apenas uma falta de atenção. Olhando com cautela, notamos que a Âncora é o único item que excede a capacidade da mochila. Então, respeitando a capacidade e considerando apenas os demais itens, podemos aplicar a mesma lógica?
 
-Você também pode inserir código, inclusive especificando a linguagem.
+??? Atividade
+Insira itens na mochila, colocando sempre o item de maior valor que não exceda a capacidade restante. Qual é o valor e capacidade da mochila em cada etapa? Temos como garantir que o valor final é o maior valor?
 
-``` py
-def f():
-    print('hello world')
-```
+::: Gabarito
+A mochila tem uma capacidade inicial de 15 kg.
+O item de maior valor que não excede a capacidade é o Bote Inflável, que pesa 8kg e vale 180. Colocando-o na mochila, este passa a ter um valor de 180 e uma capacidade de 15-8 = 7 kg.
+
+O segundo item de maior valor é o Saco de Batatas, que pesa 9kg e vale 170. Entretanto, a capacidade da mochila reduziu de 15kg para 7kg após a adição do bote inflável, e, portanto, não cabe batatas.
+
+O item de maior valor que cabe na capacidade que restou é o Fogareiro Portátil, que pesa 7kg e vale 150. Colocando-o na mochila, esta passa a ter uma capacidade de 15-8-7 = 0kg e um valor de 180+170 = 350. Esse valor é o final, já que a capacidade restante na mochila chegou a 0.
+
+O valor de 350 parece expressivo, entretanto basta uma olhada rápida para percebermos que, se preenchermos a mochila com o Bote inflável, o Rádio e a Prataria, obteremos um valor final de 370, superior ao atual. Nos dois casos, entretanto, não passa de um chute. Não seguimos nenhum método que garantisse que obteríamos sempre o maior valor, e, portanto, não temos como ter certeza de que não há uma configuração melhor.
+
+:::
+???
+
+A estratégia de adicionar os itens de maior valor até esgotar a capacidade da mochila não funciona. Adicionar os itens de menor valor até esgotar será igualmente arbitrário. Assim, qual técnica, ou algoritmo, podemos seguir para decidir se vale a pena ou não colocar um determinado item na mochila?
+
+Descrição matemática do problema
+----
+Para cada item, há duas opções: Colocar ou não colocar o item. Por isso, inclusive, esse problema é denominado Problema da Mochila Binária. Utilizemos o seguinte critério para decisão acerca de um item: *O item deverá ser colocado na mochila se seu valor for maior que o valor do espaço ocupado por ele. Isto é, vale mais a pena colocar este item do que destinar o mesmo espaço para outros itens.*
+
+Parece intuitivo, não? Porém, como podemos quantificar isso?
+
+Vamos representar os elementos do problema:
+
+* **n** é o número total de objetos disponíveis;
+* Para cada objeto i (onde i= 1, 2, …, n), temos:
+    * $v(i)$: o valor do objeto i.
+    * $w(i)$: o peso do objeto i.
+* **C** é a capacidade máxima da mochila (ou seja, o peso máximo que ela suporta).
+
+Vamos chamar de $Z(i, C)$ a função valor da mochila para i itens e capacidade atual C. Assim, temos dois casos: o caso em que o item é colocado na mochila e o caso em que o item não é colocado na mochila.
+
+**Caso 1:** O item é colocado na mochila.
+Neste caso, o valor da mochila é o valor do item somado ao valor da mochila quando tem a capacidade reduzida pelo peso do item e há i-1 itens disponíveis.
+
+$Z(i, C) = v(i) + Z(i-1, C-w(i))$
+
+**Caso 2:** O item não é colocado na mochila.
+
+Neste caso, o valor da mochila para i itens é o mesmo valor que para i-1 itens, já que o i-ésimo item não foi adicionado.
+
+$Z(i, C) = Z(i-1, C)$
+
+Desta forma, adicionaremos o item na mochila quando o valor Z obtido no caso 1 for maior que o valor obtido no caso 2, ou seja, quando o item for mais valioso que deixar disponível o espaço equivalente a seu peso.
+
+Podemos fazer os cálculos para cada item e capacidade à mão, mas seriam muitos itens. Analisemos com atenção a fórmula matemática do problema, enxerga algo de familiar? Sim, temos uma função chamando ela mesma, o que podemos pensar como um indicativo de recursividade...
+
+Algoritmo recursivo
+-----
+
+O problema da Mochila Binária é um clássico de otimização, onde precisamos maximizar o valor total dos itens na mochila sem ultrapassar sua capacidade. Para essa tarefa podemos usar duas abordagens: uma recursiva e por programação dinâmica, que é mais eficiente.
+
+Nosso objetivo é entender como o algoritmo funciona, construir o código em partes e desenvolver intuição sobre as vantagens e limitações de cada método.
+
+A primeira forma de resolver o problema da mochila é usando a **abordagem recursiva**. Esse método funciona bem para entender a essência do problema, mas pode ser lento quando o número de itens ou a capacidade é muito grande.
+
+Na recursiva, a cada item, o nosso amigo Anderson tem duas opções:
+
+1. Não incluir o item no saco.
+2. Incluir o item no saco, desde que o peso do item seja menor ou igual à capacidade restante.
+
+Para fazer isso em C, vamos criar uma função chamada [[mochilaRecursiva]]. Vamos começar a definir a estrutura básica dessa função. Essa função vai receber como parâmetros:
+
+* A capacidade restante do saco (capacidade).
+* Um vetor de pesos (pesos) e um vetor de valores (valores) para os itens.
+* O número total de itens (n) e o índice do item atual (i).
+
+Primeiro, definimos nossa função com esses parâmetros e começamos com o caso base, que indica quando a recursão deve parar.
 
 ``` c
-void f() {
-    printf("hello world\n");
+int mochilaRecursiva(int capacidade, int pesos[], int valores[], int n, int i) {
 }
 ```
 
-Se não especificar nenhuma, o código fica com colorização de terminal.
+??? Exercício: Identificando o caso base
+O que acontece se já consideramos todos os itens ou se a capacidade for zero? 
 
-```
-hello world
-```
-
-
-!!! Aviso
-Este é um exemplo de aviso, entre `md !!!`.
-!!!
-
-
-??? Exercício
-
-Este é um exemplo de exercício, entre `md ???`.
+**DICA:** Pense numa mochila vazia ou numa situação em que todos os itens já foram verificados.
 
 ::: Gabarito
-Este é um exemplo de gabarito, entre `md :::`.
-:::
+``` c
+int mochilaRecursiva(int capacidade, int pesos[], int valores[], int n, int i) {
+    if (i == n || capacidade == 0) {
+        return 0;
+    }
+}
+```
 
+No código acima, começamos verificando se já analisamos todos os itens ou se a capacidade do saco é zero. Em ambos os casos, o valor máximo que podemos obter é zero, então retornamos [[0]].
+:::
 ???
+
+Após o caso base, a próxima verificação é saber se o item atual pode ser incluído no saco. Isso depende de o peso do item ser menor ou igual à capacidade restante do saco.
+
+``` c
+if (pesos[i] > capacidade) {
+    return mochilaRecursiva(capacidade, pesos, valores, n, i + 1);
+}
+```
+
+Se o item pode ser incluído, temos duas escolhas: incluir o item ou não incluir o item. Para isso, usamos duas chamadas recursivas:
+
+1. Se incluímos o item i, somamos seu valor ao valor máximo obtido considerando os próximos itens e a capacidade restante após incluir o peso desse item:
+
+``` c
+int incluirItem = valores[i] + mochilaRecursiva(capacidade - pesos[i], pesos, valores, n, i + 1);
+```
+
+2. Se não incluímos o item i, chamamos [[mochilaRecursiva]] para o próximo item, com a capacidade inalterada.
+
+```c
+int naoIncluirItem = mochilaRecursiva(capacidade, pesos, valores, n, i + 1);
+```
+3. Por fim, devolvemos o valor máximo entre incluirItem e naoIncluirItem para garantir que estamos maximizando o valor da mochila.
+
+```c
+return incluirItem > naoIncluirItem ? incluirItem : naoIncluirItem;
+```
+
+Dessa forma, está pronta a função recursiva do problema da mochila e o nosso amigo Anderson pode finalmente ajudar Durão Barba Ruiva a encher a sacola com os itens mais valiosos.
+
+``` c
+int mochilaRecursiva(int capacidade, int pesos[], int valores[], int n, int i) {
+    if (i == n || capacidade == 0) {
+        return 0;
+    }
+
+    if (pesos[i] > capacidade) {
+        return mochilaRecursiva(capacidade, pesos, valores, n, i + 1);
+    }
+
+    int incluirItem = valores[i] + mochilaRecursiva(capacidade - pesos[i], pesos, valores, n, i + 1);
+    int naoIncluirItem = mochilaRecursiva(capacidade, pesos, valores, n, i + 1);
+
+    return incluirItem > naoIncluirItem ? incluirItem : naoIncluirItem;
+}
+```
+
+No entanto, {red}(nem tudo são flores...)
+
+??? Exercício
+O algoritmo recursivo tem um sério problema de alta complexidade computacional. Reflita: O que faz esse algoritmo ter esse tipo de comportamento?
+
+**DICA:** Pense no momento em que ocorre a chamada recursiva.
+
+::: Gabarito
+A solução recursiva tem alta complexidade exponencial ($2^n$), pois recalcula subproblemas várias vezes. Por exemplo, ao calcular o valor máximo com e sem o item 1, recalculamos subproblemas para cada um dos outros itens. É aí que entra a Programação Dinâmica, que evita essa recomputação.
+:::
+???
+
+Algoritmo Dinâmico
+----
+Para otimizar a solução e reduzir o número de recomputações, usamos a Programação Dinâmica. Aqui a ideia é ter que evitar fazer cálculos excessivos toda vez em que um item for ou não escolhido, dessa forma melhorando a complexidade, e para isso utilizar uma tabela que armazena os valores máximos já calculados.
+
+Vamos criar uma função chamada [[mochilaDinamica]]. Nesta função, usamos uma tabela [[tb]] de tamanho [[(n+1) x (capacidade+1)]], onde cada posição $tb[i][c]$ armazena o valor máximo que conseguimos usando os itens até o item [[i]] e com capacidade [[c]].
+
+```c
+int mochilaDinamica(int capacidade, int pesos[], int valores[], int n) {
+    int tb[n + 1][capacidade + 1];
+}
+```
+
+??? Exercício: Caso base
+O que acontece com a tabela para o caso em que não há itens ou simplesmente a capacidade da mochila for zero?
+
+**DICA:** Pense no algoritmo recursivo quando o mesmo problema foi abordado.
+
+::: Gabarito
+**Começamos preenchendo a tabela com 0 para a capacidade de 0 e para 0 itens.**
+
+Muito bem! A ideia é por aí mesmo.
+
+Agora pense: como que essa tabela vai ser preenchida? Ou seja, de que forma percorrer os índices da tabela para preencher com zeros?
+
+::: Gabarito
+```c
+for (int i = 0; i <= n; i++) {
+    for (int c = 0; c <= capacidade; c++) {
+        if (i == 0 || c == 0) {
+            tb[i][c] = 0;
+        }
+    }
+}
+```
+:::
+???
+
+Após a inicialização, percorremos a tabela preenchendo o valor máximo possível para cada item e capacidade. Para cada item i e capacidade c, temos as opções:
+
+1. Se o peso do item é menor ou igual à capacidade ([[pesos[i - 1] <= c]]), podemos incluir o item e o valor em $tb[i][c]$ será o maior entre:
+
+    * $tb[i - 1][c - pesos[i - 1]] + valores[i - 1]$ — valor ao incluir o item i.
+    * $tb[i - 1][c]$ — valor ao ignorar o item i.
+
+??? Exercício
+Como uma forma de exercitar o raciocínio e fixar o aprendizado, implemente as condições descritas acima ao código já construído até então.
+
+**DICA:** Construa o código seguindo exatamente a descrição do caso acima.
+
+::: Gabarito
+```c
+if (pesos[i - 1] <= c) {
+    if ((valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) > tb[i - 1][c]) {
+        tb[i][c] = valores[i - 1] + tb[i - 1][c - pesos[i - 1]];
+    } else {
+        tb[i][c] = tb[i - 1][c];
+    }
+}
+```
+
+Uma outra forma de fazer (tem exatamente o mesmo propósito):
+```c
+if (pesos[i - 1] <= c) {
+    tb[i][c] = (valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) > tb[i - 1][c] ? 
+                (valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) : tb[i - 1][c];
+}
+```
+:::
+???
+
+2. Se o peso do item é maior que a capacidade, o item não pode ser incluído e $tb[i][c]$ será apenas $tb[i - 1][c]$.
+
+??? Exercício
+Seguindo a ideia do exercício anterior, implemente a condição acima descrita ao código já construído até então.
+
+**DICA:** Construa o código seguindo exatamente a descrição do caso acima.
+
+::: Gabarito
+```c
+else if (pesos[i - 1] > c) {
+    tb[i][c] = tb[i - 1][c];
+}
+```
+
+Ou de um jeito melhor:
+
+```c
+else {
+    tb[i][c] = tb[i - 1][c];
+}
+```
+:::
+???
+
+E por fim, Após preencher toda a tabela tb, o valor máximo que pode ser obtido com n itens e capacidade capacidade estará na última célula, $tb[n][capacidade]$.
+
+```c
+return tb[n][capacidade];
+```
+
+E assim está pronto nossa função [[mochilaDinamica]]: 
+
+```c
+int mochilaDinamica(int capacidade, int pesos[], int valores[], int n) {
+    int tb[n + 1][capacidade + 1];
+
+    for (int i = 0; i <= n; i++) {
+        for (int c = 0; c <= capacidade; c++) {
+            if (i == 0 || c == 0) {
+                tb[i][c] = 0;
+            }
+            else if (pesos[i - 1] <= c) {
+                tb[i][c] = (valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) > tb[i - 1][c] ? 
+                           (valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) : tb[i - 1][c];
+            } else {
+                tb[i][c] = tb[i - 1][c];
+            }
+        }
+    }
+
+    return tb[n][capacidade];
+}
+```
+
+??? Exercício
+Agora pensando na complexidade desse algoritmo, qual seria?
+
+**DICA:** Pense na tabela criada e como ela é percorrida no algoritmo.
+
+::: Gabarito
+A complexidade da abordagem dinâmica é $O(n \times C)$, onde $n$ é o número de itens e $C$ é a capacidade da mochila. Apesar de depender da capacidade da mochila essa abordagem é consideravelmente mais eficiente que a recursiva.
+:::
+???
+
+**Comparação entre as soluções**
+
+| Método     | Vantagens     | Desvantagens    |
+|----------|----------|----------|
+| Recursiva        | Fácil de entender e implementar para casos pequenos        | Alta complexidade, muita recomputação        |
+| Programação Dinâmica        | Evita recomputação, eficiente para grandes valores de $C$        | Maior uso de memória devido à tabela        |
