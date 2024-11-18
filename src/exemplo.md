@@ -126,8 +126,66 @@ Agora, temos uma maneira de calcular se vale a pena ou não adicionar um item à
 Organizando os dados
 ---------
 
+Podemos começar organizando, numa tabela, os valores das somas que nós já fizemos anteriormente.
 
+| Itens     | Peso Total     | Valor Total   | Colocar   |
+|----------|----------|----------|----------|
+| Saco de Batatas        | 9 kg        | R$ 170,00        | Sim   |
+| Saco de Batatas + Fogareiro Portátil        | 16 kg        | R$ 320,00        | Não   |
+| Saco de Batatas + Sonar        | 14 kg        | R$ 300,00        | Sim   |
+| Sonar + Rádio + Prataria        | 13 kg        | R$ 320,00        | Sim   |
 
+Porém, desta maneira, ainda estaríamos considerando as combinações feitas por inteiro, e não de maneira sequencial, como estabelecemos anteriormente.
+
+O que faremos, então, é montar uma tabela em que possamos armazenar os valores da função Z, pois ela é capaz de contabilizar a sequencialidade. Ainda, reservaremos as linhas para contagem dos itens e as colunas para contagem da capacidade da mochila. Um exemplo pode ser ilustrado a seguir:
+
+| Capacidade     | 0     | 1   | 2   |
+| Itens     |
+|----------|----------|----------|----------|
+| Nenhum item        | -        | -        | -   |
+| Item 1        | -        | -        | -   |
+| Item 1, Item 2        | -        | -        | -   |
+| Item 1, Item 2, Item 3        | -       | -        | -   |
+
+Então, por exemplo, o valor da mochila quando há um item e a capacidade a mochila é 1 é representado pela célula de linha "Item 1" e coluna "1".
+
+??? Atividade
+O que acontece quando não há nenhum item? E quando a capacidade da mochila é zero? Como fica a tabela considerando essas informações?
+
+::: Gabarito
+Em ambos os casos o valor da mochila será zero. Portanto:
+
+| Capacidade     | 0     | 1   | 2   |
+| Itens     ||||
+|----------|----------|----------|----------|
+| Nenhum item        | 0        | 0        | 0   |
+| Item 1        | 0        | -        | -   |
+| Item 1, Item 2        | 0        | -        | -   |
+| Item 1, Item 2, Item 3        | 0       | -        | -   |
+
+:::
+???
+
+Então, por exemplo, para o caso em que só temos uma mochila de capacidade 15 kg e somente o Saco de Batatas, a tabela ficaria da seguinte forma:
+
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15
+| Itens     ||||||||||||||||
+|----------|----------|----------|----------|
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
+| Saco de Batata        |0|0|0|0|0|0|0|0|0|170|170|170|170|170|170|170
+
+Note que o valor só passa a ser 170 quando a capacidade da mochila é igual ou maior que 9 kg. Isso será útil para quando houver mais de um item. Por exemplo, com o Saco de Batatas e o Sonar:
+
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15
+| Itens     ||||||||||||||||
+|----------|----------|----------|----------|
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
+| Saco de Batata        |0|0|0|0|0|0|0|0|0|170|170|170|170|170|170|170
+| Sonar        |0|0|0|0|0|130|130|130|130|170|170|170|170|170|300|300
+
+Apesar de somente o Sonar estar indicado, na linha 2 já se presume a existência de dois itens: o Saco de Batata e o Sonar. Por essa razão, quando o peso atinge 5kg, o valor passa a ser o do Sonar até alcançar 9 kg, quando o valor do Saco de Batata passa a ser maior. Por fim, a partir de 14, os dois itens podem ser colocados juntos na mochila, portanto o valor passa a ser 300.
+
+Podemos fazer isso para todos os itens, mas isso é suficiente para seguirmos para o algoritmo.
 
 Algoritmo recursivo
 -----
