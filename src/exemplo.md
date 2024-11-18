@@ -63,44 +63,14 @@ Quando consideramos, então, todos os itens a fim de encontrar uma combinação,
 
 Como, então, podemos otimizar a análise de todas as combinações?
 
-Organizando os dados
----------
-
-Olhando para a lista de itens, seu primeiro instinto então foi: “Por que não só pegar os itens mais valiosos e colocá-los na mochila?”
-
-??? Atividade
-Olhe para os itens, o que acontece se você começar pelo item de maior valor?
-
-**DICA:** Pense numa mochila de verdade, o que aconteceria levando em conta o peso.
-
-::: Gabarito
-O item de maior valor é a Âncora de bote, que pesa 40 kg e vale R$ 250,00. Este item, no entanto, excede a capacidade da velha mochila. Se colocá-la na mochila, a mochila rasgará, deixando Durão Barba Ruiva muito muito furioso…
-:::
-???
-
-Certo, certo. Colocar o item de maior valor não é uma boa ideia porque é muito pesado, mas foi apenas uma falta de atenção. Olhando com cautela, notamos que a Âncora é o único item que excede a capacidade da mochila. Então, respeitando a capacidade e considerando apenas os demais itens, podemos aplicar a mesma lógica?
-
-??? Atividade
-Insira itens na mochila, colocando sempre o item de maior valor que não exceda a capacidade restante. Qual é o valor e capacidade da mochila em cada etapa? Temos como garantir que o valor final é o maior valor?
-
-::: Gabarito
-A mochila tem uma capacidade inicial de 15 kg.
-O item de maior valor que não excede a capacidade é o Bote Inflável, que pesa 8kg e vale 180. Colocando-o na mochila, este passa a ter um valor de 180 e uma capacidade de 15-8 = 7 kg.
-
-O segundo item de maior valor é o Saco de Batatas, que pesa 9kg e vale 170. Entretanto, a capacidade da mochila reduziu de 15kg para 7kg após a adição do bote inflável, e, portanto, não cabe batatas.
-
-O item de maior valor que cabe na capacidade que restou é o Fogareiro Portátil, que pesa 7kg e vale 150. Colocando-o na mochila, esta passa a ter uma capacidade de 15-8-7 = 0kg e um valor de 180+170 = 350. Esse valor é o final, já que a capacidade restante na mochila chegou a 0.
-
-O valor de 350 parece expressivo, entretanto basta uma olhada rápida para percebermos que, se preenchermos a mochila com o Bote inflável, o Rádio e a Prataria, obteremos um valor final de 370, superior ao atual. Nos dois casos, entretanto, não passa de um chute. Não seguimos nenhum método que garantisse que obteríamos sempre o maior valor, e, portanto, não temos como ter certeza de que não há uma configuração melhor.
-
-:::
-???
-
-A estratégia de adicionar os itens de maior valor até esgotar a capacidade da mochila não funciona. Adicionar os itens de menor valor até esgotar será igualmente arbitrário. Assim, qual técnica, ou algoritmo, podemos seguir para decidir se vale a pena ou não colocar um determinado item na mochila?
-
 Descrição matemática do problema
 ----
-Para cada item, há duas opções: Colocar ou não colocar o item. Por isso, inclusive, esse problema é denominado Problema da Mochila Binária. Utilizemos o seguinte critério para decisão acerca de um item: *O item deverá ser colocado na mochila se seu valor for maior que o valor do espaço ocupado por ele. Isto é, vale mais a pena colocar este item do que destinar o mesmo espaço para outros itens.*
+
+A primeira coisa que devemos aceitar sobre o problema é que não temos a capacidade de avaliar todos os dados simultaneamente, então precisamos seguir um método sequencial. Desta forma, temos que pensar em **qual item devo adicionar em seguida** ao invés de qual combinação posso fazer de imediato.
+
+Para isso, podemos usar o artifício matemático de pensar que, quando um item é adicionado, isso é equivalente a eu "trocar" a minha mochila por uma outra com capacidade reduzida pelo peso do item. Por exemplo, quando eu coloco o Saco de Batatas que pesa 9 kg na mochila que cabe 15 kg, isso é o mesmo que recomeçar o problema do zero com uma mochila de 6 kg. Desta forma, podemos pensar em cada inserção de maneira quase independente.
+
+Em seguida, é preciso, então, contabilizar pelo valor, afinal queremos a combinação de melhor retorno. Como, para cada item, há duas opções: Colocar ou não colocar o item (por isso, inclusive, esse problema é denominado Problema da Mochila Binária), utilizemos o seguinte critério para decisão acerca de um item: **O item deverá ser colocado na mochila se seu valor for maior que o valor do espaço ocupado por ele. Isto é, vale mais a pena colocar este item do que destinar o mesmo espaço para outros itens.**
 
 Parece intuitivo, não? Porém, como podemos quantificar isso?
 
@@ -119,15 +89,45 @@ Neste caso, o valor da mochila é o valor do item somado ao valor da mochila qua
 
 $Z(i, C) = v(i) + Z(i-1, C-w(i))$
 
+??? Atividade
+Após colocarmos o Saco de Batatas (i=1) na mochila, temos que Z(i-1, C-w(i)) = R$ 170,00. Se colocarmos o Sonar (i=2), qual o valor da mochila?
+
+::: Gabarito
+O valor do Sonar é R$ 130,00, portanto:
+
+$v(i) = 130$
+
+Logo:
+
+$Z(i, C) = 130 + 170 = 300$
+:::
+???
+
 **Caso 2:** O item não é colocado na mochila.
 
 Neste caso, o valor da mochila para i itens é o mesmo valor que para i-1 itens, já que o i-ésimo item não foi adicionado.
 
 $Z(i, C) = Z(i-1, C)$
 
+??? Atividade
+Ainda na situação em que já colocamos o Saco de Batatas, o que ocorre com o valor da mochila se não colocarmos o Sonar?
+
+::: Gabarito
+O valor da mochila não muda
+
+$Z(i, C) = Z(i-1, C) = 170$
+:::
+???
+
 Desta forma, adicionaremos o item na mochila quando o valor Z obtido no caso 1 for maior que o valor obtido no caso 2, ou seja, quando o item for mais valioso que deixar disponível o espaço equivalente a seu peso.
 
-Podemos fazer os cálculos para cada item e capacidade à mão, mas seriam muitos itens. Analisemos com atenção a fórmula matemática do problema, enxerga algo de familiar? Sim, temos uma função chamando ela mesma, o que podemos pensar como um indicativo de recursividade...
+Agora, temos uma maneira de calcular se vale a pena ou não adicionar um item à mochila. Resta, então, manter controle desses cálculos.
+
+Organizando os dados
+---------
+
+
+
 
 Algoritmo recursivo
 -----
