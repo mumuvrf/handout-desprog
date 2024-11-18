@@ -4,36 +4,67 @@ Algoritmo de Programação Dinâmica: Mochila Binária
 Situação-exemplo
 ---------
 
-Anderson é um jovem sonhador que queria viajar o mundo inteiro sem gastar nenhum tostão. Para realizar seu objetivo, ele entrou de gaiato no navio S.S. Paulina no porto de Santos. Porém, logo que o navio deixou o porto, o capitão notou o intruso e integrou-o à tripulação, ordenando: "Deixa de moleza e vai lavando esse convés".
+Anderson é um jovem sonhador que queria viajar o mundo inteiro sem gastar nenhum tostão. Para realizar seu objetivo, ele entrou de gaiato no navio S.S. Paulina. Porém, o capitão do navio logo identificou o intruso, e o pôs para descascar batatas no porão.
 
-Um belo dia, entretanto, enquanto Anderson descascava batata no porão, o navio foi invadido por piratas saqueadores, sob o comando de Durão Barba Ruiva. Porém, Durão tinha apenas uma velha mochila para carregar itens do barco, e Anderson teve uma ideia para, enfim, viajar de graça: "Sua velha mochila pouco suporta. Por sorte, sei, de cor, peso e valor de cada item nesse barco. Encho a mochila com o que há de melhor se me levar a Xique-Xique, Bahia!"
+Um belo dia, entretanto, o navio foi invadido por piratas saqueadores, sob o comando de Durão Barba Ruiva. Durão, despreparado, tinha apenas uma velha mochila para carregar itens do barco, e Anderson teve uma ideia para, enfim, viajar de graça:
 
-Durão, então, respondeu: "Topo! Mas me perca um tostão e eu quebro sua perna."
+"Sua velha mochila suporta pouco peso. Por sorte, sei, de cor, peso e valor de cada item nesse barco. Encho a mochila com o que há de melhor se me levar a Xique-Xique, Bahia!"
 
-Anderson abriu um sorriso e saiu correndo pelo convés com a velha mochila. Porém, de repente, ele percebeu que não era tão fácil assim saber quais itens colocar na mochila e quais itens deixar para trás.
+Durão, então, respondeu: "Topo! Mas me perca um tostão e eu quebro a sua perna."
 
-Suando frio e com medo de ter sua perna quebrada, nosso marinheiro resolveu pedir sua ajuda. Você, ávido por Desafios de Programação, aceitou. Porém, a questão permanece: ***Como encontrar a configuração de itens, com diferentes pesos e valores, que maximize o valor total sem ultrapassar a capacidade da mochila?***
+Anderson abriu um sorriso e saiu correndo pelo convés com a velha mochila. Porém, ele logo percebeu que não era tão fácil saber quais itens colocar na mochila e quais itens deixar para trás.
+
+Suando frio e com medo de ter sua perna quebrada, nosso marinheiro resolveu pedir sua ajuda. Você, ávido por Desafios de Programação, aceitou. 
+
+Agora é sua vez de ajudar: ***Como encontrar a melhor configuração de itens de forma a maximizar o valor total sem ultrapassar a capacidade da mochila?***
 
 
 Primeiras impressões
 ---------
 
-Você, como um bom engenheiro e problem-solver, sabe que, para resolver um problema, é preciso antes ter todas as informações que o definem. Assim, você solicitou a Anderson que ele lhe oferecesse uma lista de todos os pesos e valores dos itens do barco, assim como a capacidade da mochila.
+Anderson lhe entregou a mochila, que suporta **15 kg**. Você, então, pediu que a tripulação do S.S. Paulina organizasse os itens e lhe trouxessem.
 
-Ele então lhe entregou um pedaço de papel de pão com os seguintes dados escritos:
+Foi lhe entregue o seguinte:
 
-* **Capacidade da velha mochila**: 15 kg.
 * **Itens**:
     * **Binóculos**, pesa 1 kg e vale R$ 10,00;
-    * **Âncora de bote**, pesa 40 kg e vale R$ 250,00;
     * **Saco de batatas**, pesa 9 kg e vale R$ 170,00;
     * **Prataria**, pesa 3 kg e vale R$ 100,00;
     * **Sonar**, pesa 5 kg e vale R$ 130,00;
-    * **Bote inflável**, pesa 8 kg e vale R$ 180,00;
     * **Rádio**, pesa 4 kg e vale R$ 90,00;
-    * **Rede de pesca**, pesa 6 kg e vale R$ 120,00;
     * **Colete salva-vidas**, pesa 2 kg e vale R$ 60,00;
     * **Fogareiro portátil**, pesa 7 kg e vale R$ 150,00.
+
+Vamos pensar por partes. Para encher a mochila, temos que ter um ponto de partida. Esse ponto de partida pode ser o primeiro item!
+
+??? Atividade
+Se você pudesse colocar um, e apenas um, item para colocar na mochila. Qual o processo por trás dessa escolha?
+
+::: Gabarito
+Podemos pensar "Se o Durão Barba-Ruiva só pudesse sair daqui com um item, qual item o faria feliz?" Nesse caso, importa o item que é mais valioso, e portanto o mais intuitivo é fazer uma varredura pela lista de itens procurando esse item. Assim, chegamos ao **Saco de batatas** que vale R$ 170,00.
+:::
+???
+
+Colocar um item é fácil, pois há poucas informações a considerar. Assim, pudemos focar em uma única parte do problema: Maximizar o valor total na mochila. Porém, se tivermos que colocar dois ou mais itens, a escolha já pode não ser tão imediata.
+
+??? Atividade
+Selecione dois itens para colocar na mochila. Como você chegou a essa combinação? Que novos problemas surgiram?
+
+::: Gabarito
+Com dois itens, agora é necessário considerar não somente o peso e valor de cada item, mas a soma deles. Isso traz três novas situações:
+
+- **A soma dos pesos dos itens ser maior que a capacidade da mochila**: Isso é o caso para a combinação Saco de Batatas + Fogareiro Portátil (9 + 7 = 16 kg), o que torna essa combinação inválida.
+- **É preciso analisar várias informações de uma vez**: Você pode ter que somar os pesos e valores de vários itens, e ter controle das informações se torna difícil.
+- **Pode existir uma outra combinação com mais itens que tenha maior valor**: Com dois itens, podemos maximizar o valor selecionando o Saco de Batatas e o Sonar (9 + 5 = 14 kg < 15 kg), totalizando 170 + 130 = R$ 300,00. Porém, com três itens, poderíamos combinar o Sonar, o Rádio e a Prataria (5 + 4 + 3 = 12 kg < 15 kg), totalizando 130 + 90 + 100 = R$ 320,00.
+:::
+???
+
+Quando consideramos, então, todos os itens a fim de encontrar uma combinação, temos que ter em mente a possibilidade de existir uma combinação alternativa com um valor maior. Isso nos leva a testar todas as somas de pesos e valores possíveis, o que, sem um método de organização e utilização dessas informações, se torna trabalhoso.
+
+Como, então, podemos otimizar a análise de todas as combinações?
+
+Organizando os dados
+---------
 
 Olhando para a lista de itens, seu primeiro instinto então foi: “Por que não só pegar os itens mais valiosos e colocá-los na mochila?”
 
