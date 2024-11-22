@@ -22,13 +22,11 @@ Agora é sua vez de ajudar: ***Como encontrar a melhor configuração de itens d
 Primeiras impressões
 ---------
 
-Anderson lhe entregou a mochila, que suporta **15 kg**. Você, então, pediu que a tripulação do S.S. Paulina organizasse os itens e lhe trouxessem.
+Anderson lhe entregou a mochila, que suporta **10 kg**. Você, então, pediu que a tripulação do S.S. Paulina organizasse os itens e lhe trouxessem.
 
 Foi lhe entregue o seguinte:
 
 * **Itens**:
-    * **Binóculos**, pesa 1 kg e vale R$ 10,00;
-    * **Saco de batatas**, pesa 9 kg e vale R$ 170,00;
     * **Prataria**, pesa 3 kg e vale R$ 100,00;
     * **Sonar**, pesa 5 kg e vale R$ 130,00;
     * **Rádio**, pesa 4 kg e vale R$ 90,00;
@@ -38,10 +36,12 @@ Foi lhe entregue o seguinte:
 Vamos pensar por partes. Para encher a mochila, temos que ter um ponto de partida. Esse ponto de partida pode ser o primeiro item!
 
 ??? Atividade
-Se você pudesse colocar um, e apenas um, item para colocar na mochila. Qual o processo por trás dessa escolha?
+Se você pudesse colocar um, e apenas um, item para colocar na mochila, qual seria? Qual o processo por trás dessa escolha?
 
 ::: Gabarito
-Podemos pensar "Se o Durão Barba-Ruiva só pudesse sair daqui com um item, qual item o faria feliz?" Nesse caso, importa o item que é mais valioso, e portanto o mais intuitivo é fazer uma varredura pela lista de itens procurando esse item. Assim, chegamos ao **Saco de batatas** que vale R$ 170,00.
+Podemos pensar "Se o Durão Barba-Ruiva só pudesse sair daqui com um item, qual item o faria feliz?" Nesse caso, importa o item que é mais valioso.
+
+Portanto, o mais intuitivo é fazer uma varredura pela lista de itens procurando esse item. Assim, chegamos ao **Fogareiro Portátil** que vale R$ 150,00.
 :::
 ???
 
@@ -53,9 +53,9 @@ Selecione dois itens para colocar na mochila. Como você chegou a essa combinaç
 ::: Gabarito
 Com dois itens, agora é necessário considerar não somente o peso e valor de cada item, mas a soma deles. Isso traz três novas situações:
 
-- **A soma dos pesos dos itens ser maior que a capacidade da mochila**: Isso é o caso para a combinação Saco de Batatas + Fogareiro Portátil (9 + 7 = 16 kg), o que torna essa combinação inválida.
+- **A soma dos pesos dos itens ser maior que a capacidade da mochila**: Isso é o caso para a combinação Fogareiro Portátil + Sonar (7 + 5 = 12 kg), o que torna essa combinação inválida.
 - **É preciso analisar várias informações de uma vez**: Você pode ter que somar os pesos e valores de vários itens, e ter controle das informações se torna difícil.
-- **Pode existir uma outra combinação com mais itens que tenha maior valor**: Com dois itens, podemos maximizar o valor selecionando o Saco de Batatas e o Sonar (9 + 5 = 14 kg < 15 kg), totalizando 170 + 130 = R$ 300,00. Porém, com três itens, poderíamos combinar o Sonar, o Rádio e a Prataria (5 + 4 + 3 = 12 kg < 15 kg), totalizando 130 + 90 + 100 = R$ 320,00.
+- **Pode existir uma outra combinação com mais itens que tenha maior valor**: Com dois itens, podemos maximizar o valor selecionando o Fogareiro Portátil e a Prataria (7 + 3 = 10 kg), totalizando 150 + 100 = R$ 250,00. Porém, com três itens, poderíamos combinar o Sonar, o Colete Salva-Vidas e a Prataria (5 + 2 + 3 = 10 kg), totalizando 130 + 60 + 100 = R$ 290,00.
 :::
 ???
 
@@ -66,40 +66,79 @@ Como, então, podemos otimizar a análise de todas as combinações?
 Descrição matemática do problema
 ----
 
-A primeira coisa que devemos aceitar sobre o problema é que não temos a capacidade de avaliar todos os dados simultaneamente, então precisamos seguir um método sequencial. Desta forma, temos que pensar em **qual item devo adicionar em seguida** ao invés de qual combinação posso fazer de imediato.
+Analisar todos os itens simultaneamente é impossível. Precisamos considerar um item por vez, de maneira sequencial. Porém, como fazer isso?
 
-Para isso, podemos usar o artifício matemático de pensar que, quando um item é adicionado, isso é equivalente a eu "trocar" a minha mochila por uma outra com capacidade reduzida pelo peso do item. Por exemplo, quando eu coloco o Saco de Batatas que pesa 9 kg na mochila que cabe 15 kg, isso é o mesmo que recomeçar o problema do zero com uma mochila de 6 kg. Desta forma, podemos pensar em cada inserção de maneira quase independente.
+Uma ideia é pensar que adicionar um item de determinado peso na mochila é equivalente a "trocar" a mochila por outra de capacidade reduzida. Por exemplo, se minha mochila tem capacidade 10kg e adiciono um item de 6kg, o que me resta é uma mochila de capacidade 4kg.
 
-Em seguida, é preciso, então, contabilizar pelo valor, afinal queremos a combinação de melhor retorno. Como, para cada item, há duas opções: Colocar ou não colocar o item (por isso, inclusive, esse problema é denominado Problema da Mochila Binária), utilizemos o seguinte critério para decisão acerca de um item: **O item deverá ser colocado na mochila se seu valor for maior que o valor do espaço ocupado por ele. Isto é, vale mais a pena colocar este item do que destinar o mesmo espaço para outros itens.**
+Desta forma, podemos olhar um item por vez e considerar: "Vale a pena colocar este item na mochila, dado o espaço que resta?".
 
-Parece intuitivo, não? Porém, como podemos quantificar isso?
+Há duas possibilidades:
 
-Vamos representar os elementos do problema:
+    **1. Colocar o item na mochila:** Nesse caso perdemos espaço da mochila que poderia ser usado para outros itens, mas ganhamos o valor do item.
 
-* **n** é o número total de objetos disponíveis;
-* Para cada objeto i (onde i= 1, 2, …, n), temos:
-    * $v(i)$: o valor do objeto i.
-    * $w(i)$: o peso do objeto i.
-* **C** é a capacidade máxima da mochila (ou seja, o peso máximo que ela suporta).
-
-Vamos chamar de $Z(i, C)$ a função valor da mochila para i itens e capacidade atual C. Assim, temos dois casos: o caso em que o item é colocado na mochila e o caso em que o item não é colocado na mochila.
-
-**Caso 1:** O item é colocado na mochila.
-Neste caso, o valor da mochila é o valor do item somado ao valor da mochila quando tem a capacidade reduzida pelo peso do item e há i-1 itens disponíveis.
-
-$Z(i, C) = v(i) + Z(i-1, C-w(i))$
+    **2. Não colocar o item na mochila:** Em que deixamos de ganhar o valor do item, mas preservamos o espaço para usar com outros itens.
 
 ??? Atividade
-Após colocarmos o Saco de Batatas (i=1) na mochila, temos que Z(i-1, C-w(i)) = R$ 170,00. Se colocarmos o Sonar (i=2), qual o valor da mochila?
+Considere as duas combinações abaixo.
+
+**Combinação 1:** Fogareiro Portátil + Prataria
+
+**Combinação 1:** Sonar + Colete Salva-Vidas + Prataria
+
+O que se pode afirmar sobre o valor da mochila em cada caso? Você diria que vale a pena colocar o Fogareiro Portátil na mochila?
 
 ::: Gabarito
-O valor do Sonar é R$ 130,00, portanto:
+Para a combinação 1 o valor contido na mochila é 150 + 100 = 250.
 
-$v(i) = 130$
+Para a combinação 2 o valor contido na mochila é 130 + 60 + 100 = 290.
 
-Logo:
+Não vale a pena colocar o Fogareiro Portátil na mochila, pois **o valor contido na mochila é menor** do que destinarmos esse espaço ao Sonar e ao Colete Salva-Vidas.
 
-$Z(i, C) = 130 + 170 = 300$
+:::
+???
+
+Em ambos os casos, é relevante conseguir identificar esse "valer a pena", o que pode ser resumido ao **valor da mochila ser maior**. Porém, para saber isso, precisamos quantificar, entre outras coisas, o valor contido na mochila.
+
+Vamos nomear as variáveis do nosso problema:
+
+* **Z** é a função valor da mochila;
+* **n** é o número total de itens disponíveis;
+* Para cada i itens (i é cumulativo, não confundir) (onde i= 1, 2, …, n), temos:
+    * $v(i)$: o valor do i-ésimo item.
+    * $w(i)$: o peso do i-ésimo.
+* **C** é a capacidade máxima da mochila (ou seja, o peso máximo que ela suporta).
+
+??? Atividade
+**Z**, a função valor da mochila, depende de quais variáveis?
+
+::: Gabarito
+**Z** é influenciado pelo **valor dos itens** $v(i)$, pois quanto mais itens de valor, mais ela vale.
+
+Também é influenciado pela **capacidade**, pois quanto maior sua capacidade mais itens valiosos podem ser adicionados.
+
+:::
+???
+
+Desta forma, podemos chamar de $Z(i, C)$ a função valor da mochila para i itens e capacidade atual C. Assim, temos dois casos: o caso em que o item é colocado na mochila e o caso em que o item não é colocado na mochila.
+
+**Caso 1: O item é colocado na mochila**
+
+Neste caso a mochila passa a ser mais valiosa à medida que o item é valioso. Além disso, sua capacidade reduz na medida do peso do item.
+
+??? Atividade
+Escreva a fórmula do valor da mochila para o caso em que o item é adicionado.
+
+**Dica:** Lembre-se que adicionar um item de determinado peso na mochila é equivalente a "trocar" a mochila por outra de capacidade reduzida.
+
+::: Gabarito
+Quando um item de peso $w(i)$ e valor $v(i)$ é adicionado na mochila...
+
+* A mochila diminui sua capacidade em $w(i)$ (é "trocada" por uma mochila de capacidade $C-w(i)$).
+* A mochila aumenta seu valor em $v(i)$.
+
+Assim, temos que:
+
+$Z(i, C) = v(i) + Z(i-1, C-w(i))$
 :::
 ???
 
@@ -109,19 +148,11 @@ Neste caso, o valor da mochila para i itens é o mesmo valor que para i-1 itens,
 
 $Z(i, C) = Z(i-1, C)$
 
-??? Atividade
-Ainda na situação em que já colocamos o Saco de Batatas, o que ocorre com o valor da mochila se não colocarmos o Sonar?
 
-::: Gabarito
-O valor da mochila não muda
 
-$Z(i, C) = Z(i-1, C) = 170$
-:::
-???
+Agora, temos uma maneira de calcular se vale a pena ou não adicionar um item à mochila:
 
-Desta forma, adicionaremos o item na mochila quando o valor Z obtido no caso 1 for maior que o valor obtido no caso 2, ou seja, quando o item for mais valioso que deixar disponível o espaço equivalente a seu peso.
-
-Agora, temos uma maneira de calcular se vale a pena ou não adicionar um item à mochila. Resta, então, manter controle desses cálculos.
+**O item será adicionado quando a função valor da mochila for superior ao caso em que o item não é adicionado na mochila.**
 
 Organizando os dados
 ---------
@@ -168,20 +199,17 @@ Em ambos os casos o valor da mochila será zero. Portanto:
 
 Então, por exemplo, para o caso em que só temos uma mochila de capacidade 15 kg e somente o Saco de Batatas, a tabela ficaria da seguinte forma:
 
-| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10
 | Itens     ||||||||||||||||
 |----------|----------|----------|----------|
-| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
-| Saco de Batata        |0|0|0|0|0|0|0|0|0|170|170|170|170|170|170|170
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0
 
 Note que o valor só passa a ser 170 quando a capacidade da mochila é igual ou maior que 9 kg. Isso será útil para quando houver mais de um item. Por exemplo, com o Saco de Batatas e o Sonar:
 
-| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10
 | Itens     ||||||||||||||||
 |----------|----------|----------|----------|
-| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
-| Saco de Batata        |0|0|0|0|0|0|0|0|0|170|170|170|170|170|170|170
-| Sonar        |0|0|0|0|0|130|130|130|130|170|170|170|170|170|300|300
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0
 
 Apesar de somente o Sonar estar indicado, na linha 2 já se presume a existência de dois itens: o Saco de Batata e o Sonar. Por essa razão, quando o peso atinge 5kg, o valor passa a ser o do Sonar até alcançar 9 kg, quando o valor do Saco de Batata passa a ser maior. Por fim, a partir de 14, os dois itens podem ser colocados juntos na mochila, portanto o valor passa a ser 300.
 
