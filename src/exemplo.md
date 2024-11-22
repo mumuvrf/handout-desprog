@@ -66,7 +66,7 @@ Como, então, podemos otimizar a análise de todas as combinações?
 Descrição matemática do problema
 ----
 
-Analisar todos os itens simultaneamente é impossível. Precisamos considerar um item por vez, de maneira sequencial. Porém, como fazer isso?
+Analisar todos os itens qualitativamente e simultaneamente é impossível. Precisamos considerar um item por vez, de maneira sequencial e quantitativa. Porém, como fazer isso?
 
 Uma ideia é pensar que adicionar um item de determinado peso na mochila é equivalente a "trocar" a mochila por outra de capacidade reduzida. Por exemplo, se minha mochila tem capacidade 10kg e adiciono um item de 6kg, o que me resta é uma mochila de capacidade 4kg.
 
@@ -161,14 +161,14 @@ Podemos começar organizando, numa tabela, os valores das somas que nós já fiz
 
 | Itens     | Peso Total     | Valor Total   | Colocar   |
 |----------|----------|----------|----------|
-| Saco de Batatas        | 9 kg        | R$ 170,00        | Sim   |
-| Saco de Batatas + Fogareiro Portátil        | 16 kg        | R$ 320,00        | Não   |
-| Saco de Batatas + Sonar        | 14 kg        | R$ 300,00        | Sim   |
-| Sonar + Rádio + Prataria        | 13 kg        | R$ 320,00        | Sim   |
+| Fogareiro Portátil        | 7 kg        | R$ 150,00        | Sim   |
+| Fogareiro Portátil + Sonar        | 12 kg        | R$ 280,00        | Não   |
+| Fogareiro Portátil + Prataria        | 10 kg        | R$ 250,00        | Sim   |
+| Sonar + Prataria + Colete Salva-Vidas        | 10 kg        | R$ 290,00        | Sim   |
 
 Porém, desta maneira, ainda estaríamos considerando as combinações feitas por inteiro, e não de maneira sequencial, como estabelecemos anteriormente.
 
-O que faremos, então, é montar uma tabela em que possamos armazenar os valores da função Z, pois ela é capaz de contabilizar a sequencialidade. Ainda, reservaremos as linhas para contagem dos itens e as colunas para contagem da capacidade da mochila. Um exemplo pode ser ilustrado a seguir:
+O que faremos, então, é montar uma tabela em que possamos armazenar os valores de $Z(i, C)$, pois ela é capaz de contabilizar a sequencialidade. Ainda, reservaremos as linhas para contagem dos itens e as colunas para contagem da capacidade da mochila. Um exemplo pode ser ilustrado a seguir:
 
 | Capacidade     | 0     | 1   | 2   |
 | Itens     |
@@ -197,23 +197,116 @@ Em ambos os casos o valor da mochila será zero. Portanto:
 :::
 ???
 
-Então, por exemplo, para o caso em que só temos uma mochila de capacidade 15 kg e somente o Saco de Batatas, a tabela ficaria da seguinte forma:
+Vamos "navegar" pelo nosso problema. Começaremos com a mochila de capacidade **10kg**, ainda vazia.
 
 | Capacidade     |0|1|2|3|4|5|6|7|8|9|10
 | Itens     ||||||||||||||||
 |----------|----------|----------|----------|
 | Nenhum item        |0|0|0|0|0|0|0|0|0|0|0
 
-Note que o valor só passa a ser 170 quando a capacidade da mochila é igual ou maior que 9 kg. Isso será útil para quando houver mais de um item. Por exemplo, com o Saco de Batatas e o Sonar:
+Vamos adicionar o Sonar, que pesa 5kg e vale R$ 100,00.
 
-| Capacidade     |0|1|2|3|4|5|6|7|8|9|10
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|
 | Itens     ||||||||||||||||
 |----------|----------|----------|----------|
-| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
+| Sonar        |||||||||||
 
-Apesar de somente o Sonar estar indicado, na linha 2 já se presume a existência de dois itens: o Saco de Batata e o Sonar. Por essa razão, quando o peso atinge 5kg, o valor passa a ser o do Sonar até alcançar 9 kg, quando o valor do Saco de Batata passa a ser maior. Por fim, a partir de 14, os dois itens podem ser colocados juntos na mochila, portanto o valor passa a ser 300.
+??? Atividade
+O que acontece quando a capacidade da mochila é menor que 5kg? Preencha a tabela.
 
-Podemos fazer isso para todos os itens, mas isso é suficiente para seguirmos para o algoritmo.
+::: Gabarito
+O item não pode ser colocado na mochila, portanto:
+
+$Z(1, C) = Z(0, C) = 0$
+
+Assim:
+
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|
+| Itens     ||||||||||||||||
+|----------|----------|----------|----------|
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
+| Sonar        |0|0|0|0|0|||||||
+:::
+???
+
+O Sonar é inserido na mochila quando a capacidade a mochila é 5kg. A partir de então, é intuitivo pensar que a mochila terá seu valor.
+
+Se desejarmos, também podemos fazer o cálculo a partir da função $Z(i, C)$ no caso em que o elemento é inserido.
+
+$v(1) = 130$
+
+$Z(1, 10) = v(1) + Z(0, 10-w(1)) = 130 + Z(0, 5) = 130$
+
+Assim, nossa tabela fica da seguinte maneira:
+
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|
+| Itens     ||||||||||||||||
+|----------|----------|----------|----------|
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
+| Sonar        |0|0|0|0|0|130|130|130|130|130|130|
+
+Vamos continuar, adicionando a Prataria, que pesa 3kg e vale 100 R$.
+
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|
+| Itens     ||||||||||||||||
+|----------|----------|----------|----------|
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
+| Sonar        |0|0|0|0|0|130|130|130|130|130|130|
+| Prataria        |0|0|0|100|100|||||||
+
+Sabemos que enquanto a capacidade é menor que 3kg, não precisamos nos preocupar, pois nenhum item será adicionado até então. Além disso, a partir de 3kg a Prataria pode ser adicionada, mas a partir de 5kg tanto a Prataria quanto o Sonar podem ser adicionados. Como escolher?
+
+??? Atividade
+Qual o valor da mochila quando o peso é entre 5kg e 8kg? E de 8kg a 10kg?
+
+::: Gabarito
+Quando 5kg <= C <= 8kg, não podemos adicionar o Sonar e a Prataria ao mesmo tempo, então é preciso ponderar.
+
+Para isso, vamos manter a ideia de analisar item por item, e, nesse caso, estamos analisando a Prataria, então temos dois casos:
+
+Caso 1: Adicionar a Prataria
+
+Vamos supor C = 7kg;
+
+$Z(2, 7) = v(2) + Z(1, 7-3) = v(2) + Z(1, 4)$
+
+**OBS:** Note que Z(1, 4) não é uma célula adjacente. Como estamos subtraindo o peso, podemos ter que consultar qualquer célula da tabela!
+
+$Z(2, 7) = 100 + 0 = 100$
+
+Caso 2: Não adicionar a Prataria
+
+$Z(2, C) = Z(1, C) = 150$
+
+Incrível, não? Sequer precisamos considerar diretamente o Sonar, mas usando a função e consultando a tabela seu valor aparece naturalmente.
+
+Acima de C = 8kg, podemos adicionar os dois itens simultaneamente, portanto:
+
+Assim:
+
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|
+| Itens     ||||||||||||||||
+|----------|----------|----------|----------|
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
+| Sonar        |0|0|0|0|0|130|130|130|130|130|130|
+| Prataria        |0|0|0|100|100|130|130|130|230|230|230|
+:::
+???
+
+Podemos fazer isso para todos os itens. Desta forma, nossa tabela ficará assim:
+
+| Capacidade     |0|1|2|3|4|5|6|7|8|9|10|
+| Itens     ||||||||||||||||
+|----------|----------|----------|----------|
+| Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
+| Sonar        |0|0|0|0|0|130|130|130|130|130|130|
+| Prataria        |0|0|0|100|100|130|130|130|230|230|230|
+| Colete Salva-Vidas        |0|0|60|100|100|160|160|160|230|230|290|
+| Fogareiro Portátil        |0|0|60|100|100|160|160|160|230|230|290|
+| Rádio        |0|0|60|100|100|160|160|160|230|230|290|
+
+Agora que você está começando a entender, podemos partir para o nosso algoritmo.
 
 Algoritmo Dinâmico
 ----
