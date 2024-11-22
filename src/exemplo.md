@@ -116,6 +116,8 @@ Vamos nomear as variáveis do nosso problema:
 
 Também é influenciado pela **capacidade**, pois quanto maior sua capacidade mais itens valiosos podem ser adicionados.
 
+O **peso dos itens** também tem seu papel no valor da mochila, porém atua de forma indireta, reduzindo a capacidade da mochila.
+
 :::
 ???
 
@@ -157,7 +159,9 @@ Agora, temos uma maneira de calcular se vale a pena ou não adicionar um item à
 Organizando os dados
 ---------
 
-Podemos começar organizando, numa tabela, os valores das somas que nós já fizemos anteriormente.
+Até então, fomos capazes de quantificar o problema e estabelecer um critério de decisão. Entretanto, para lidar com grandes quantidades de informações, ainda será necessário organizá-las.
+
+Podemos começar a fazê-lo, inserindo, numa tabela, os valores das somas que nós já fizemos anteriormente.
 
 | Itens     | Peso Total     | Valor Total   | Colocar   |
 |----------|----------|----------|----------|
