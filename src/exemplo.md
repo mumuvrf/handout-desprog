@@ -217,7 +217,7 @@ Vamos "navegar" pelo nosso problema. Começaremos com a mochila de capacidade **
 |----------|----------|----------|----------|
 | Nenhum item        |0|0|0|0|0|0|0|0|0|0|0
 
-Vamos adicionar o Sonar, que pesa 5kg e vale R$ 100,00.
+Vamos adicionar o Sonar, que pesa 5kg e vale R$ 130,00.
 
 | Capacidade     |0|1|2|3|4|5|6|7|8|9|10|
 | Itens     ||||||||||||||||
@@ -290,11 +290,15 @@ $Z(2, 7) = 100 + 0 = 100$
 
 **Caso 2:** Não adicionar a Prataria
 
-$Z(2, C) = Z(1, C) = 150$
+$Z(2, C) = Z(1, C) = 130$
 
 Incrível, não? Sequer precisamos considerar diretamente o Sonar, mas usando a função e consultando a tabela seu valor aparece naturalmente.
 
 Acima de C = 8kg, podemos adicionar os dois itens simultaneamente, portanto:
+
+$Z(2, 8) = v(2) + Z(1, 8-3) = v(2) + Z(1, 5)$
+
+$Z(2, 8) = 100 + 130 = 230$
 
 Assim:
 
