@@ -103,7 +103,7 @@ Vamos nomear as variáveis do nosso problema:
 
 * **Z** é a função valor da mochila;
 * **n** é o número total de itens disponíveis;
-* Para cada i itens (i é cumulativo, não confundir) (onde i= 1, 2, …, n), temos:
+* Para cada i itens (o i-ésimo item e todos os anteriores), onde i= 1, 2, …, n, temos:
     * $v(i)$: o valor do i-ésimo item.
     * $w(i)$: o peso do i-ésimo.
 * **C** é a capacidade máxima da mochila (ou seja, o peso máximo que ela suporta).
@@ -168,31 +168,40 @@ Podemos começar organizando, numa tabela, os valores das somas que nós já fiz
 
 Porém, desta maneira, ainda estaríamos considerando as combinações feitas por inteiro, e não de maneira sequencial, como estabelecemos anteriormente.
 
-O que faremos, então, é montar uma tabela em que possamos armazenar os valores de $Z(i, C)$, pois ela é capaz de contabilizar a sequencialidade. Ainda, reservaremos as linhas para contagem dos itens e as colunas para contagem da capacidade da mochila. Um exemplo pode ser ilustrado a seguir:
+O que faremos, então, é montar uma tabela em que possamos armazenar os valores de $Z(i, C)$, pois ela é capaz de contabilizar a sequencialidade. Essa tabela tem as seguintes características:
+
+* **linhas:** Itens, cumulativamente apresentados (cada considera o item atual e todos os anteriores);
+* **colunas:** Capacidade da mochila em kg, aumentando gradativamente;
+* **célula:** Valor de $Z(i, C)$ para os i itens e capacidade C.
+
+Um exemplo de tabela está ilustrado a seguir:
 
 | Capacidade     | 0     | 1   | 2   |
 | Itens     |
 |----------|----------|----------|----------|
 | Nenhum item        | -        | -        | -   |
 | Item 1        | -        | -        | -   |
-| Item 1, Item 2        | -        | -        | -   |
-| Item 1, Item 2, Item 3        | -       | -        | -   |
+| Item 2 (+ Item 1)        | -        | -        | -   |
+| Item 3 (+ Item 1, Item 2)        | -       | -        | -   |
 
 Então, por exemplo, o valor da mochila quando há um item e a capacidade a mochila é 1 é representado pela célula de linha "Item 1" e coluna "1".
 
 ??? Atividade
-O que acontece quando não há nenhum item? E quando a capacidade da mochila é zero? Como fica a tabela considerando essas informações?
+Qual o valor das células da primeira linha, em que não há itens? E das células da primeira coluna, em que a capacidade é zero?
 
 ::: Gabarito
-Em ambos os casos o valor da mochila será zero. Portanto:
+
+Quando não há itens, nada pode ser inserido na mochila, portanto o valor contido na mochila sempre será 0. Logo, os valores de todas as células da primeira linha são 0.
+
+Quando a capacidade a mochila é 0, nenhum item pode ser adicionado, portanto o valor contido na mochila sempre será 0. Logo, os valores de todas as células da primeira coluna são 0.
 
 | Capacidade     | 0     | 1   | 2   |
 | Itens     ||||
 |----------|----------|----------|----------|
 | Nenhum item        | 0        | 0        | 0   |
 | Item 1        | 0        | -        | -   |
-| Item 1, Item 2        | 0        | -        | -   |
-| Item 1, Item 2, Item 3        | 0       | -        | -   |
+| Item 2        | 0        | -        | -   |
+| Item 3        | 0       | -        | -   |
 
 :::
 ???
@@ -210,7 +219,7 @@ Vamos adicionar o Sonar, que pesa 5kg e vale R$ 100,00.
 | Itens     ||||||||||||||||
 |----------|----------|----------|----------|
 | Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
-| Sonar        |||||||||||
+| Sonar        |?|?|?|?|?|?|?|?|?|?|?|
 
 ??? Atividade
 O que acontece quando a capacidade da mochila é menor que 5kg? Preencha a tabela.
@@ -226,7 +235,7 @@ Assim:
 | Itens     ||||||||||||||||
 |----------|----------|----------|----------|
 | Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
-| Sonar        |0|0|0|0|0|||||||
+| Sonar        |0|0|0|0|0|?|?|?|?|?|?|
 :::
 ???
 
@@ -253,19 +262,19 @@ Vamos continuar, adicionando a Prataria, que pesa 3kg e vale 100 R$.
 |----------|----------|----------|----------|
 | Nenhum item        |0|0|0|0|0|0|0|0|0|0|0|
 | Sonar        |0|0|0|0|0|130|130|130|130|130|130|
-| Prataria        |0|0|0|100|100|||||||
+| Prataria        |0|0|0|100|100|?|?|?|?|?|?|
 
 Sabemos que enquanto a capacidade é menor que 3kg, não precisamos nos preocupar, pois nenhum item será adicionado até então. Além disso, a partir de 3kg a Prataria pode ser adicionada, mas a partir de 5kg tanto a Prataria quanto o Sonar podem ser adicionados. Como escolher?
 
 ??? Atividade
-Qual o valor da mochila quando o peso é entre 5kg e 8kg? E de 8kg a 10kg?
+Qual o valor da mochila quando a capacidade da mochila é entre 5kg e 8kg? E de 8kg a 10kg?
 
 ::: Gabarito
 Quando 5kg <= C <= 8kg, não podemos adicionar o Sonar e a Prataria ao mesmo tempo, então é preciso ponderar.
 
 Para isso, vamos manter a ideia de analisar item por item, e, nesse caso, estamos analisando a Prataria, então temos dois casos:
 
-Caso 1: Adicionar a Prataria
+**Caso 1:** Adicionar a Prataria
 
 Vamos supor C = 7kg;
 
@@ -275,7 +284,7 @@ $Z(2, 7) = v(2) + Z(1, 7-3) = v(2) + Z(1, 4)$
 
 $Z(2, 7) = 100 + 0 = 100$
 
-Caso 2: Não adicionar a Prataria
+**Caso 2:** Não adicionar a Prataria
 
 $Z(2, C) = Z(1, C) = 150$
 
@@ -354,7 +363,7 @@ Também preenchemos a tabela com 0!
 
 ???
 
-Como bservado, a mochila não ter itens ou a mochila simplesmente não tiver capacidade (imagine que rasgada!!) simplesmente preenchemos como vazia. Dessa forma, passado o caso base, nosso algoritmo vai ganhando corpo:
+Como observado, a mochila não ter itens ou a mochila simplesmente não tiver capacidade (imagine que rasgada!!) simplesmente preenchemos como vazia. Dessa forma, passado o caso base, nosso algoritmo vai ganhando corpo:
 
 ```c
 int mochilaDinamica(int capacidade, int pesos[], int valores[], int n) {
@@ -398,8 +407,9 @@ Dessa forma, baseado nessas duas opções nosso algoritmo fica:
 
 ``` c
 else if (pesos[i - 1] <= c) {
-    tb[i][c] = (valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) > tb[i - 1][c] ? 
-                (valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) : tb[i - 1][c];
+    int insere = valores[i - 1] + tb[i - 1][c - pesos[i - 1]];
+    int nao_insere = tb[i - 1][c];
+    tb[i][c] = insere > nao_insere ? insere : nao_insere;
 } else {
     tb[i][c] = tb[i - 1][c];
 }
@@ -419,8 +429,9 @@ int mochilaDinamica(int capacidade, int pesos[], int valores[], int n) {
                 tb[i][c] = 0;
             }
             else if (pesos[i - 1] <= c) {
-                tb[i][c] = (valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) > tb[i - 1][c] ? 
-                           (valores[i - 1] + tb[i - 1][c - pesos[i - 1]]) : tb[i - 1][c];
+                int insere = valores[i - 1] + tb[i - 1][c - pesos[i - 1]];
+                int nao_insere = tb[i - 1][c];
+                tb[i][c] = insere > nao_insere ? insere : nao_insere;
             } else {
                 tb[i][c] = tb[i - 1][c];
             }
